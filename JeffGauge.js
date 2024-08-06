@@ -1,6 +1,6 @@
 /*
  Created on : Aug 5, 2013, 9:45:46 AM
- Author     : SESA285765
+ Author     : Jeff Greenwell
  */
 
 var Gauge = function(config) {
