@@ -47,7 +47,8 @@ The `DataCache` module is designed to store and manage time series data efficien
 
 ## Usage
 
-### Example
+### Example 1 : Basica Data Caching
+This example demonstrates how to create a DataCache instance, add a dataset, and manage time series data with cumulative accumulation.
 
 ```javascript
 // Create a new DataCache instance with cumulative accumulation
@@ -71,3 +72,87 @@ console.log(cache.inCache(new DataSet(0, 100))); // Output: true
 
 // Empty the cache
 cache.empty();
+```
+
+
+### Example 2 : Interval Data Caching
+This example shows how to use the DataCache with interval-based accumulation, which is useful when dealing with discrete time intervals.
+
+```javascript
+// Create a new DataCache instance with interval accumulation
+var cache = new DataCache(ACCUMULATION.INTERVAL);
+
+// Add multiple datasets
+cache.addSet(new DataSet(0, 50));
+cache.addSet(new DataSet(51, 100));
+
+// Add raw data for each interval
+cache.addData([10, 20, 30, 40, 50]);
+cache.addData([60, 70, 80, 90, 100]);
+
+// Add log data for specific time intervals
+cache.addLogData({
+  '1627898400000': 500,
+  '1627898460000': 600,
+  '1627898520000': 700
+});
+
+// Check if specific intervals are in the cache
+console.log(cache.inCache(new DataSet(0, 50)));  // Output: true
+console.log(cache.inCache(new DataSet(51, 100))); // Output: true
+```
+
+### Example 3: Advanced Dataset Manipulation
+In this example, we demonstrate how to split a dataset into smaller chunks and work with overlapping datasets.
+
+```javascript
+// Create a new DataSets instance
+var dataSets = new DataSets();
+
+// Define a large dataset
+var largeSet = new DataSet(0, 1000);
+
+// Add the large dataset to the collection
+dataSets.addSet(largeSet);
+
+// Split the dataset into smaller chunks of size 100
+var chunks = largeSet.chunk(100);
+
+// Add each chunk to the DataSets collection
+chunks.forEach(function(chunk) {
+    dataSets.addSet(chunk);
+});
+
+// Check for overlapping datasets
+var overlapCheck = new DataSet(50, 150);
+console.log(dataSets.wouldBeAdded(overlapCheck));  // Output: true
+
+// Inspect the datasets
+console.log(dataSets);
+```
+
+### Example 4: Combining Datasets with Caching
+This example combines the use of DataSets and DataCache to handle complex scenarios involving multiple overlapping datasets.
+
+```javascript
+// Create a new DataCache instance
+var cache = new DataCache(ACCUMULATION.CUMULATIVE);
+
+// Define and add multiple datasets
+cache.addSet(new DataSet(0, 50));
+cache.addSet(new DataSet(60, 120));
+
+// Add log data associated with these datasets
+cache.addLogData({
+  '1627898400000': 300,
+  '1627898460000': 400,
+  '1627898520000': 500
+});
+
+// Check if a new overlapping dataset would be added
+var newSet = new DataSet(30, 70);
+console.log(cache.inCache(newSet)); // Output: true or false based on overlap handling
+
+// Process and inspect the data
+console.log(cache);
+```
